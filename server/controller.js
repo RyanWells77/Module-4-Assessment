@@ -36,6 +36,20 @@ module.exports = {
         console.log("Length:", length);
     
         res.status(200).send("")
+    },
+
+    deleteShip: (req, res) => {
+        const {id} = req.params
+
+        const index = ships.findIndex(ships => {
+            console.log(ships, id)
+            return ships.id === +id
+        })
+        if (ships[index] > globalId){
+            res.status(400).send("id is not in data base.")
+        }
+        ships.splice(index, 1)
+        res.status(200).send(ships)
     }
 
 }

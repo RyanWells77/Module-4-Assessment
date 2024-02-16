@@ -8,10 +8,13 @@ app.use(cors());
 
 app.use(express.json());
 
-const { getCompliment, getFortune, addShip } = require('./controller')
+let ships = []
+
+const { getCompliment, getFortune, addShip, deleteShip } = require('./controller')
 
 app.get("/api/compliment", getCompliment);
 app.get("/api/fortune", getFortune)
 app.post("/api/addShip", addShip)
+app.delete("/api/deleteShip:id", deleteShip)
 
 app.listen(4000, () => console.log("Server running on 4000"));

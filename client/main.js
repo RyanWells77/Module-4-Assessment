@@ -7,6 +7,8 @@ const starShipElement = document.createElement("div")
 const shipForm = document.getElementById("shipForm")
 const shipList = document.getElementById("shipList")
 
+const deleteShip = id => axios.delete(`${baseURL}/${id}`).then().catch(errCallback)
+
 
 const displayStarships = (starships) => {
     starShipList.innerHTML = ""
