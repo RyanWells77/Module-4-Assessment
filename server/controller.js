@@ -17,6 +17,14 @@ module.exports = {
         let randomFortune = fortunes[randomFortuneIndex]
 
         res.status(200).send(randomFortune)
+    },
+    
+    addShip: (req, res) => {
+        const {name, model} = req.body
+        const newShip = {name, model}
+
+        ship.push(newShip)
+        res.status(200).send(newShip)
     }
 
 }

@@ -9,15 +9,16 @@
 
     <section>
       <button id="starWars-ships">Star Wars Ships</button>
-      <form>
-        <input type="text" id="id" placeholder="Star Wars Ship" />
-        <button id="starShip-button">Submit</button>
-
-        <div id="Ship-list">
-
-        </div>
-        
+      <div id="Ship-list"></div>
+      <h1>Add a new Ship</h1>
+      <form id="shipForm">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" />
+        <label for="model">Model:</label>
+        <input type="text" id="model" name="model" />
+        <button type="submit">Add Ship</button>
       </form>
+      
     </section>
 
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>

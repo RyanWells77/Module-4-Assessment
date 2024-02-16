@@ -4,6 +4,8 @@ const starWarsShipsBtn = document.getElementById("starWars-ships")
 const starShipSubmitBtn = document.getElementById("starShip-button")
 const starShipList = document.getElementById("Ship-list")
 const starShipElement = document.createElement("div")
+const shipForm = document.getElementById("shipForm")
+const shipList = document.getElementById("shipList")
 
 
 const displayStarships = (starships) => {
@@ -43,6 +45,35 @@ const shipDetails = (url, starShipElement) => {
     })
 }
 
+const addShip = (event) =>{
+    event.preventDefault()
+
+    const formData = new Formdata(shipForm)
+    const shipData = {}
+    Formdata.forEach((value, key) => {
+        shipData[key] = value
+    })
+}
+
+
+
+const getCompliment = () => {
+    axios.get("http://localhost:4000/api/compliment/")
+    .then(res => {
+        const data = res.data;
+        alert(data);
+    });
+};
+
+const getFortune = () => {
+    axios.get("http://localhost:4000/api/fortune")
+    .then(res => {
+        const data = res.data
+        alert(data)
+    })
+}
+
+shipForm.addEventListener("submit", addShip)
 starWarsShipsBtn.addEventListener("click", () => {
     axios.get("https://swapi.dev/api/starships/")
         .then(res => {
@@ -53,22 +84,5 @@ starWarsShipsBtn.addEventListener("click", () => {
             console.log("Error fetching ships", error)
         })
 })
-
-const getCompliment = () => {
-    axios.get("http://localhost:4000/api/compliment/")
-        .then(res => {
-            const data = res.data;
-            alert(data);
-        });
-};
-
-const getFortune = () => {
-    axios.get("http://localhost:4000/api/fortune")
-        .then(res => {
-            const data = res.data
-            alert(data)
-        })
-}
-
 fortuneBtn.addEventListener("click", getFortune)
 complimentBtn.addEventListener('click', getCompliment)
