@@ -48,9 +48,9 @@ const shipDetails = (url, starShipElement) => {
 const addShip = (event) =>{
     event.preventDefault()
 
-    const formData = new Formdata(shipForm)
+    const formData = new FormData(shipForm)
     const shipData = {}
-    Formdata.forEach((value, key) => {
+    formData.forEach((value, key) => {
         shipData[key] = value
     })
 }

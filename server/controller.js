@@ -19,12 +19,23 @@ module.exports = {
         res.status(200).send(randomFortune)
     },
     
-    addShip: (req, res) => {
-        const {name, model} = req.body
-        const newShip = {name, model}
-
-        ship.push(newShip)
-        res.status(200).send(newShip)
+    addShip:  (req, res) => {
+        const { name, model, manufacturer, cost_in_credits, length } = req.body;
+        const newShip = {
+            name: body.name,
+            model: body.model,
+            manufacturer: body.manufacturer,
+            cost_in_credits: cost_in_credits,
+            }
+    
+        console.log("New ship added:");
+        console.log("Name:", name);
+        console.log("Model:", model);
+        console.log("Manufacturer:", manufacturer);
+        console.log("Cost in credits:", cost_in_credits);
+        console.log("Length:", length);
+    
+        res.status(200).send("")
     }
 
 }
