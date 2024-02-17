@@ -10,10 +10,11 @@ app.use(express.json());
 
 let ships = []
 
-const { getCompliment, getFortune, addShip, deleteShip } = require('./controller')
+const { getCompliment, getFortune, addShip, deleteShip, getShips } = require('./controller')
 
 app.get("/api/compliment", getCompliment);
 app.get("/api/fortune", getFortune)
+app.get("/api/getShips", getShips)
 app.post("/api/addShip", addShip)
 app.delete("/api/deleteShip:id", deleteShip)
 

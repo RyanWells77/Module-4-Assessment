@@ -18,6 +18,20 @@ module.exports = {
 
         res.status(200).send(randomFortune)
     },
+
+    getShips: (req, res) => {
+        axios.get("https://swapi.dev/api/starships/")
+        .then(response => {
+            const shipsList = response.data.results.map(ship => ({
+                name: ship.name
+            }))
+            res.status(200).send("Getting Ships.")
+        })
+        .catch(error => {
+            res.status(500).send("Failed to get Ships.")
+        })
+
+    },
     
     addShip:  (req, res) => {
         const { name, model, manufacturer, cost_in_credits, length } = req.body;
