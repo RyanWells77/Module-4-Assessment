@@ -1,4 +1,6 @@
 const axios = require('axios')
+let shipsList = []
+console.log(shipsList)
 
 module.exports = {
 
@@ -25,7 +27,7 @@ module.exports = {
         axios.get("https://swapi.dev/api/starships/")
             .then(response => {
                 // console.log("response", response.data)
-                const shipsList = response.data.results.map(ship => {
+                shipsList = response.data.results.map(ship => {
                     const { name,
                         model,
                         manufacturer,
@@ -57,66 +59,85 @@ module.exports = {
                     }
                 })
                 res.status(200).json(shipsList)
-    })
-        .catch(error => {
-        res.status(500).send("Failed to get Ships.")
-    })
+            })
+            .catch(error => {
+                res.status(500).send("Failed to get Ships.")
+            })
 
-},
+    },
 
-//     shipDetails: (req, res) => {
-//         axios.get("https://swapi.dev/api/starships/")
-//             .then(response => {
-//                 const shipDetails = response.data.results.map(ship => ({ name, model, manufacturer, cost_in_credits, length } = response.data.results.map
-//                 const newShip = {
-//                     name: body.name,
-//                     model: body.model,
-//                     manufacturer: body.manufacturer,
-//                     cost_in_credits: cost_in_credits,
-//                 }))
-//         res.status(200).send("Getting Ships.")
-//     })
-//         .catch (error => {
-//     res.status(500).send("Failed to get Ships.")
-// })
+    getShipsList: (req, res) => {
+        res.status(200).json(shipsList)
+    },
 
-//     },
 
-// shipDetails: (req, res) => {
-//     const shipName = req.params.shipName
-// }
+    getShipDetails: (req, res) => {
+        const { name } = req.params
+        const ship = shipsList.find(ship => ship.name === name)
+        if (!ship) {
+            return res.status(404).json({ message: "Ship not found" })
+        }
+        delete ship.name
+        res.status(200).json(ship)
+    },
 
-addShip: (req, res) => {
-    const { name, model, manufacturer, cost_in_credits, length } = req.body;
-    const newShip = {
-        name: body.name,
-        model: body.model,
-        manufacturer: body.manufacturer,
-        cost_in_credits: cost_in_credits,
-    }
+    //     shipDetails: (req, res) => {
+    //         axios.get("https://swapi.dev/api/starships/")
+    //             .then(response => {
+    //                 const shipDetails = response.data.results.map(ship => ({ name, model, manufacturer, cost_in_credits, length } = response.data.results.map
+    //                 const newShip = {
+    //                     name: body.name,
+    //                     model: body.model,
+    //                     manufacturer: body.manufacturer,
+    //                     cost_in_credits: cost_in_credits,
+    //                 }))
+    //         res.status(200).send("Getting Ships.")
+    //     })
+    //         .catch (error => {
+    //     res.status(500).send("Failed to get Ships.")
+    // })
 
-    console.log("New ship added:");
-    console.log("Name:", name);
-    console.log("Model:", model);
-    console.log("Manufacturer:", manufacturer);
-    console.log("Cost in credits:", cost_in_credits);
-    console.log("Length:", length);
+    //     },
 
-    res.status(200).send("")
-},
+    // shipDetails: (req, res) => {
+    //     const shipName = req.params.shipName
+    // }
+
+    addShip: (req, res) => {
+        const { name, model, manufacturer, cost_in_credits, length, max_atmosphering_speed, crew, passengers, cargo_capacity, consumables, hyperdrive_rating, MGLT, starship_class } = req.body;
+        const existingShip = shipsList.find(ship => ship.name === name)
+        if (existingShip) {
+            return res.status(400).send("Ship with name already exists.")
+        }
+        const newShip = {
+            name: name,
+            model: model,
+            manufacturer: manufacturer,
+            cost_in_credits: cost_in_credits,
+            length: length,
+            max_atmosphering_speed: max_atmosphering_speed,
+            crew: crew,
+            passengers: passengers,
+            cargo_capacity: cargo_capacity,
+            consumables: consumables,
+            hyperdrive_rating: hyperdrive_rating,
+            MGLT: MGLT,
+            starship_class: starship_class
+        }
+        shipsList.push(newShip)
+
+        res.status(200).send("")
+    },
 
     deleteShip: (req, res) => {
-        const { id } = req.params
+        const { name } = req.params
 
-        const index = ships.findIndex(ships => {
-            console.log(ships, id)
-            return ships.id === +id
-        })
-        if (ships[index] > globalId) {
+        const index = shipsList.findIndex(ship => ship.name === name)
+        if (index === -1) {
             res.status(400).send("id is not in data base.")
         }
-        ships.splice(index, 1)
-        res.status(200).send(ships)
+        shipsList.splice(index, 1)
+        res.status(200).send("Ship was deleted")
     }
 
 }

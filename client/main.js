@@ -5,68 +5,81 @@ const starShipSubmitBtn = document.getElementById("starShip-button")
 const starShipList = document.getElementById("Ship-list")
 const starShipElement = document.createElement("div")
 const shipForm = document.getElementById("shipForm")
-// const shipList = document.getElementById("shipList")
+
 const baseURL = ("http://localhost:4000/api")
 
-const deleteShip = id => axios.delete(`${baseURL}/${id}`).then().catch(errCallback)
 
-
-const displayStarships = (starships) => {
-    starShipList.innerHTML = ""
-
-    starships.forEach(starship => {
-        const shipNameElement = document.createElement("h2")
-        const newStarShipElement = document.createElement("div")
-
-        shipNameElement.textContent = starship.name
-        shipNameElement.addEventListener('click', () => {
-            shipDetails(`${baseURL}/getShips`, newStarShipElement)
-        })
-        newStarShipElement.appendChild(shipNameElement)
-        starShipList.appendChild(newStarShipElement)
-    })
+const shipNameClick = (shipName, newStarShipElement) => {
+    getShipDetails(shipName, newStarShipElement)
+}
+const deleteButtonClick = (starShip) => {
+    deleteShip(starShip)
 }
 
 const shipList = () => {
     axios.get(`${baseURL}/getShips`)
         .then(response => {
-            console.log("response.data:", response.data)
+            // console.log("response.data:", response.data)
             const ships = response.data
-            console.log("ships:", ships)
+        })
+}
+
+const getShipsList = () => {
+    starShipList.innerHTML = ""
+    axios.get(`${baseURL}/getShipsList`)
+        .then(response => {
+            // console.log("response.data:", response.data)
+            const ships = response.data
+            // console.log("ships:", ships)
             ships.forEach(starShip => {
                 const shipNameElement = document.createElement("h2")
                 const newStarShipElement = document.createElement("div")
+                const deleteBtn = document.createElement("button")
+
 
                 shipNameElement.textContent = starShip.name
                 shipNameElement.addEventListener('click', () => {
-                    shipDetails(`${baseURL}/getShips/${starShip.name}`, newStarShipElement)
+                    shipNameClick(starShip.name, newStarShipElement)
                 })
+                deleteBtn.textContent = "X"
+                deleteBtn.addEventListener('click', () => {
+                    deleteButtonClick(starShip)
+                })
+
+                shipNameElement.appendChild(deleteBtn)
                 newStarShipElement.appendChild(shipNameElement)
                 starShipList.appendChild(newStarShipElement)
             })
         })
+        .catch(error => {
+            console.error("Failed to get ship list.", error)
+        })
 }
 
+const getShipDetails = (shipName, newStarShipElement) => {
+    // console.log("Sending request for ship:", shipName)
+    axios.get(`${baseURL}/getShipDetails/${encodeURIComponent(shipName)}`)
+        .then(response => {
+            // console.log("ship data", response.data)
+            const shipDetailsElement = document.createElement("div")
+            shipDetailsElement.classList.add("ship-details")
 
-const shipDetails = (url, starShipElement) => {
-    axios.get()
-        .then(res => {
-            const shipDetails = res.data
-            const moreShipDetails = document.createElement("div")
-            const shipAdditonalDetailsLs = document.createElement("ul")
-
-            for (const [key, value] of Object.entries(shipDetails)) {
-                const detailItems = document.createElement("li")
-                detailItems.textContent = `${key}: ${value}`
-                shipAdditonalDetailsLs.appendChild(detailItems)
+            for (const key in response.data) {
+                if (response.data.hasOwnProperty(key)) {
+                    const detailElement = document.createElement("p")
+                    detailElement.textContent = `${key}: ${response.data[key]}`
+                    shipDetailsElement.appendChild(detailElement)
+                }
             }
-            moreShipDetails.appendChild(shipAdditonalDetailsLs)
-            starShipElement.appendChild(moreShipDetails)
+            newStarShipElement.appendChild(shipDetailsElement)
         })
         .catch(error => {
-            console.log("Error cant getting details", error)
+            console.error("Failed to get details", error)
         })
 }
+
+
+
 
 const addShip = (event) => {
     event.preventDefault()
@@ -76,8 +89,28 @@ const addShip = (event) => {
     formData.forEach((value, key) => {
         shipData[key] = value
     })
+    console.log("data sent:", shipData)
+
+    axios.post(`${baseURL}/addShip`, shipData)
+        .then(response => {
+            console.log("Ship added", response.data)
+            getShipsList()
+        })
+        .catch(error => {
+            console.error("Failed to add ship", error)
+        })
 }
 
+const deleteShip = starShip => {
+    axios.delete(`${baseURL}/deleteShip/${encodeURIComponent(starShip.name)}`)
+        .then(response => {
+            console.log("Ship deleted successfully:", response.data);
+            getShipsList();
+        })
+        .catch(error => {
+            console.error("Failed to delete ship:", error);
+        });
+}
 
 
 const getCompliment = () => {
@@ -96,17 +129,12 @@ const getFortune = () => {
         })
 }
 
+
+document.addEventListener('DOMContentLoaded', () => {
+    shipList()
+})
+
 shipForm.addEventListener("submit", addShip)
-starWarsShipsBtn.addEventListener("click", shipList)
-// starWarsShipsBtn.addEventListener("click", () => {
-//     axios.get(`${baseURL}/getShips`)
-//         .then(res => {
-//             const starships = res.data.results;
-//             displayStarships(starships);
-//         })
-//         .catch(error => {
-//             console.log("Error fetching ships.", error)
-//         })
-// })
+starWarsShipsBtn.addEventListener("click", getShipsList)
 fortuneBtn.addEventListener("click", getFortune)
 complimentBtn.addEventListener('click', getCompliment)
